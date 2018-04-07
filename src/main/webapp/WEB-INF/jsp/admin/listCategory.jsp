@@ -14,6 +14,7 @@ $(function(){
         if(!checkEmpty("categoryPic","分类图片"))
             return false;
         return true;
+        
     });
 });
  
