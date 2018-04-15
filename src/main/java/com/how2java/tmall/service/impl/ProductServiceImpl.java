@@ -10,7 +10,8 @@ import com.how2java.tmall.service.ProductImageService;
 import com.how2java.tmall.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
- 
+
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -77,6 +78,35 @@ public class ProductServiceImpl implements ProductService {
 	public void setFirstProductImage(List<Product> ps) {
 		for(Product p :ps) {
 			setFirstProductImage(p);
+		}
+	}
+
+	@Override
+	public void fill(List<Category> cs) {
+		for(Category c : cs) {
+			fill(c);
+		}
+	}
+
+	@Override
+	public void fill(Category c) {
+		List<Product> ps = list(c.getId());
+		c.setProducts(ps);
+	}
+
+	@Override
+	public void fillByRow(List<Category> cs) {
+		int ProductNumberEachRow = 8;
+		for(Category c : cs) {
+			List<Product> products = c.getProducts();
+			List<List<Product>> productsByRow  = new ArrayList<>();
+			for(int i=0;i < products.size();i += ProductNumberEachRow) {
+				int size = i+ProductNumberEachRow;
+				size = size > products.size()?products.size():size;
+				List<Product> productsOfEachRow = products.subList(i, size);
+				productsByRow.add(productsOfEachRow);
+			}
+			c.setProductsByRow(productsByRow);
 		}
 	}
 }
