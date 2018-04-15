@@ -10,6 +10,9 @@ public class OrderItem {
     private Integer uid;
 
     private Integer number;
+    
+    //数据库没有对字段
+    private Product product;
 
     public Integer getId() {
         return id;
@@ -50,4 +53,12 @@ public class OrderItem {
     public void setNumber(Integer number) {
         this.number = number;
     }
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
 }

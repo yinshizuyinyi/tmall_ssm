@@ -8,6 +8,9 @@ public class PropertyValue {
     private Integer ptid;
 
     private String value;
+    
+    //非数据库值
+    private Property property;
 
     public Integer getId() {
         return id;
@@ -40,4 +43,12 @@ public class PropertyValue {
     public void setValue(String value) {
         this.value = value == null ? null : value.trim();
     }
+
+	public Property getProperty() {
+		return property;
+	}
+
+	public void setProperty(Property property) {
+		this.property = property;
+	}
 }

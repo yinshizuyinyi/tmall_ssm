@@ -18,7 +18,11 @@ public class Product {
     private Integer cid;
 
     private Date createDate;
-
+    
+    //非数据库字段
+    private Category category;
+    private ProductImage firstProductImage;
+    
     public Integer getId() {
         return id;
     }
@@ -82,4 +86,20 @@ public class Product {
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public ProductImage getFirstProductImage() {
+		return firstProductImage;
+	}
+
+	public void setFirstProductImage(ProductImage firstProductImage) {
+		this.firstProductImage = firstProductImage;
+	}
 }
