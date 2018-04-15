@@ -40,7 +40,7 @@ public class OrderController {
  
         return "admin/listOrder";
     }
- 
+    
     @RequestMapping("admin_order_delivery")
     public String delivery(Order o) throws IOException {
         o.setDeliveryDate(new Date());
