@@ -12,10 +12,12 @@ public interface OrderItemService {
     void delete(int id);
     void update(OrderItem c);
     OrderItem get(int id);
-    List list();
+    List<OrderItem> list();
  
     void fill(List<Order> os);
  
     void fill(Order o);
+    
+    int getSaleCount(int pid);
  
 }
