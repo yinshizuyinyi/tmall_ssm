@@ -1,5 +1,6 @@
 package com.how2java.tmall.controller;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,12 +21,14 @@ import com.how2java.tmall.comparator.ProductPriceComparator;
 import com.how2java.tmall.comparator.ProductReviewComparator;
 import com.how2java.tmall.comparator.ProductSaleCountComparator;
 import com.how2java.tmall.pojo.Category;
+import com.how2java.tmall.pojo.OrderItem;
 import com.how2java.tmall.pojo.Product;
 import com.how2java.tmall.pojo.ProductImage;
 import com.how2java.tmall.pojo.PropertyValue;
 import com.how2java.tmall.pojo.Review;
 import com.how2java.tmall.pojo.User;
 import com.how2java.tmall.service.CategoryService;
+import com.how2java.tmall.service.OrderItemService;
 import com.how2java.tmall.service.ProductImageService;
 import com.how2java.tmall.service.ProductService;
 import com.how2java.tmall.service.PropertyValueService;
@@ -48,7 +51,8 @@ public class ForeController {
 	@Autowired
 	ReviewService reviewService;
 	
-	
+	@Autowired
+	OrderItemService orderItemService;
 
 	@RequestMapping("forehome")
 	public String home(Model model) {
@@ -180,6 +184,84 @@ public class ForeController {
         productService.setSaleAndReviewNumber(ps);
         model.addAttribute("ps",ps);
         return "fore/searchResult";
+    }
+	
+	@RequestMapping("forebuyone")
+	public String buyone(int pid,int num,HttpSession session) {
+		Product p = productService.get(pid);
+		int oiid = 0;
+		
+		User user = (User) session.getAttribute("user");
+		boolean found = false;
+		List<OrderItem> ois = orderItemService.listByUser(user.getId());
+		for(OrderItem oi : ois) {
+			if(oi.getProduct().getId().intValue() ==p.getId().intValue()) {
+				oi.setNumber(oi.getNumber() + num);
+				orderItemService.update(oi);
+				found = true;
+				oiid = oi.getId();
+				break;
+			}
+		}
+		if(!found) {
+			OrderItem oi = new OrderItem();
+			oi.setUid(user.getId());
+			oi.setNumber(num);
+			oi.setPid(pid);
+			orderItemService.add(oi);
+			oiid = oi.getId();
+		}
+		
+		return "redirect:forebuy?oiid="+oiid;
+	}
+	
+	@RequestMapping("forebuy")
+	public String buy(Model model,String[] oiid,HttpSession session) {
+		List<OrderItem> ois = new ArrayList<>();
+		float total = 0;
+		for(String strid : oiid) {
+			int id = Integer.parseInt(strid);
+			OrderItem oi = orderItemService.get(id);
+			total += oi.getProduct().getPromotePrice()*oi.getNumber();
+			ois.add(oi);
+		}
+		session.setAttribute("ois", ois);
+		model.addAttribute("total",total);
+		return "fore/buy";
+	}
+	
+	@RequestMapping("foreaddCart")
+    @ResponseBody
+    public String addCart(int pid, int num, Model model,HttpSession session) {
+        Product p = productService.get(pid);
+        User user =(User)  session.getAttribute("user");
+        boolean found = false;
+ 
+        List<OrderItem> ois = orderItemService.listByUser(user.getId());
+        for (OrderItem oi : ois) {
+            if(oi.getProduct().getId().intValue()==p.getId().intValue()){
+                oi.setNumber(oi.getNumber()+num);
+                orderItemService.update(oi);
+                found = true;
+                break;
+            }
+        }
+ 
+        if(!found){
+            OrderItem oi = new OrderItem();
+            oi.setUid(user.getId());
+            oi.setNumber(num);
+            oi.setPid(pid);
+            orderItemService.add(oi);
+        }
+        return "success";
+    }
+	@RequestMapping("forecart")
+    public String cart( Model model,HttpSession session) {
+        User user =(User)  session.getAttribute("user");
+        List<OrderItem> ois = orderItemService.listByUser(user.getId());
+        model.addAttribute("ois", ois);
+        return "fore/cart";
     }
 }
 
