@@ -4,16 +4,24 @@ import com.how2java.tmall.mapper.CategoryMapper;
 import com.how2java.tmall.pojo.Category;
 import com.how2java.tmall.pojo.CategoryExample;
 import com.how2java.tmall.service.CategoryService;
-import com.how2java.tmall.util.Page;
+import com.how2java.tmall.service.ProductService;
+import com.how2java.tmall.service.PropertyService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
 	@Autowired
 	CategoryMapper categoryMapper;
+	@Autowired
+	ProductService productService;
+	@Autowired
+	PropertyService propertyService;
 
 	@Override
 	public List<Category> list() {
@@ -28,7 +36,10 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
 	public void delete(int id) {
+		productService.deleteByCategory(id);
+		propertyService.deleteByCategory(id);
 		categoryMapper.deleteByPrimaryKey(id);
 	}
 

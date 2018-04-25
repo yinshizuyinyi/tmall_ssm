@@ -14,4 +14,5 @@ public interface ProductImageService {
 	void update(ProductImage pi);
 	ProductImage get(int id);
 	List<ProductImage> list(int pid,String type);
+	void deleteByProduct(int pid);
 }

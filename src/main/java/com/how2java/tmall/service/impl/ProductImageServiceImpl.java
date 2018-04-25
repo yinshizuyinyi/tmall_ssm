@@ -45,4 +45,18 @@ public class ProductImageServiceImpl implements ProductImageService {
         example.setOrderByClause("id desc");
         return productImageMapper.selectByExample(example);
     }
+
+	@Override
+	public void deleteByProduct(int pid) {
+		List<ProductImage> pis = list(pid);
+		for (ProductImage pi : pis) {
+			delete(pi.getId());
+		}
+	}
+
+	private List<ProductImage> list(int pid) {
+		ProductImageExample example = new ProductImageExample();
+		example.createCriteria().andPidEqualTo(pid);
+		return productImageMapper.selectByExample(example);
+	}
 }

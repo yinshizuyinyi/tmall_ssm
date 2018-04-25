@@ -68,7 +68,7 @@ public class CategoryController {
 	}
 	
 	@RequestMapping("admin_category_edit")
-	public String deit(int id,Model model) {
+	public String edit(int id,Model model) {
 		Category c = categoryService.get(id);
 		model.addAttribute("c",c);
 		return "admin/editCategory";

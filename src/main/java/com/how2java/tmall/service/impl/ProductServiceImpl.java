@@ -13,6 +13,8 @@ import com.how2java.tmall.service.ReviewService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,11 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
 	public void delete(int id) {
+		orderItemService.deleteByProduct(id);
+		reviewService.deleteByProduct(id);
+		productImageService.deleteByProduct(id);
 		productMapper.deleteByPrimaryKey(id);
 	}
 
@@ -145,5 +151,14 @@ public class ProductServiceImpl implements ProductService {
 		setFirstProductImage(result);
 		setCategory(result);
 		return result;
+	}
+
+	@Override
+	public void deleteByCategory(int cid) {
+		List<Product> ps = 	list(cid);
+		for (Product product : ps) {
+			delete(product.getId());
+		}
+		
 	}
 }

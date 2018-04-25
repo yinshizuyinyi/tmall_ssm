@@ -68,4 +68,19 @@ public class ReviewServiceImpl implements ReviewService {
 		return list(pid).size();
 	}
 
+	@Override
+	public void deleteByProduct(int pid) {
+		List<Review> reviews= listByProduct(pid);
+		for (Review review : reviews) {
+			delete(review.getId());
+		}
+		
+	}
+
+	private List<Review> listByProduct(int pid) {
+		ReviewExample example = new ReviewExample();
+		example.createCriteria().andPidEqualTo(pid);
+		return reviewMapper.selectByExample(example);
+	}
+
 }

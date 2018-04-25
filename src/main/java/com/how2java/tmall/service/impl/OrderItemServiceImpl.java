@@ -56,6 +56,9 @@ public class OrderItemServiceImpl implements OrderItemService {
 		}
 	}
 
+	/**
+	 * 填充订单的订单项，总价和数量
+	 */
 	public void fill(Order o) {
 		OrderItemExample example = new OrderItemExample();
 		example.createCriteria().andOidEqualTo(o.getId());
@@ -85,7 +88,7 @@ public class OrderItemServiceImpl implements OrderItemService {
 		Product p = productService.get(oi.getPid());
 		oi.setProduct(p);
 	}
-	
+
 	/**
 	 * 根据产品获取产品销量
 	 */
@@ -95,8 +98,8 @@ public class OrderItemServiceImpl implements OrderItemService {
 		example.createCriteria().andPidEqualTo(pid);
 		List<OrderItem> ois = orderItemMapper.selectByExample(example);
 		int result = 0;
-		for(OrderItem oi : ois) {
-			result +=oi.getNumber();
+		for (OrderItem oi : ois) {
+			result += oi.getNumber();
 		}
 		return result;
 	}
@@ -108,5 +111,20 @@ public class OrderItemServiceImpl implements OrderItemService {
 		List<OrderItem> result = orderItemMapper.selectByExample(example);
 		setProduct(result);
 		return result;
+	}
+
+	public List<OrderItem> ListByProduct(int pid) {
+		OrderItemExample example = new OrderItemExample();
+		example.createCriteria().andPidEqualTo(pid);
+		List<OrderItem> result = orderItemMapper.selectByExample(example);
+		return result;
+	}
+
+	@Override
+	public void deleteByProduct(int pid) {
+		List<OrderItem> ois = ListByProduct(pid);
+		for (OrderItem oi : ois) {
+			delete(oi.getId());
+		}
 	}
 }

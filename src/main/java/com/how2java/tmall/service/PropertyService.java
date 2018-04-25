@@ -15,4 +15,6 @@ public interface PropertyService {
 
 	List<Property> list(int cid);
 
+	void deleteByCategory(int cid);
+
 }

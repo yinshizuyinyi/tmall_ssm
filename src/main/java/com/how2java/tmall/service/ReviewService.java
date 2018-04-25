@@ -7,6 +7,7 @@ import com.how2java.tmall.pojo.Review;
 public interface ReviewService {
 	void add(Review c);
 	void delete(int id);
+	void deleteByProduct(int pid);
 	void update(Review c);
 	Review get(int id);
 	List<Review> list(int pid);
